@@ -39,21 +39,41 @@ class Board extends Component {
     super(props);
 
     // TODO: set initial state
-    this.state = { hasWon: false, board: this.createBoard() };
+    this.state = { hasWon: false, board: this.createBoard(), allaboard: [] };
 
     this.flipCellsAround = this.flipCellsAround.bind(this);
   }
 
   /** create a board nrows high/ncols wide, each cell randomly lit or unlit */
   createBoard() {
-    let board = [];
+    let { ncols, nrows } = this.props;
+
+    let board = Array.from({ length: nrows }, () =>
+      Array.from({ length: ncols }, () => false)
+    );
+
+    function flipCell(y, x) {
+      // if this coord is actually on board, flip it
+
+      if (x >= 0 && x < ncols && y >= 0 && y < nrows) {
+        board[y][x] = !board[y][x];
+      }
+    }
+
     // TODO: create array-of-arrays of true/false values
     for (let y = 0; y < this.props.nrows; y++) {
       let row = [];
       for (let x = 0; x < this.props.ncols; x++) {
-        row.push(Math.random() < this.props.chanceLightStartsOn);
+        row[x] = Math.random() < this.props.chanceLightStartsOn;
+        flipCell(y, x - 1);
+        flipCell(y, x + 1);
+        flipCell(y + 1, x);
+        flipCell(y - 1, x);
       }
-      board.push(row);
+      board[y] = row;
+      let aboard = this.state.allaboard;
+      aboard.push(board);
+      this.setState({ allaboard: aboard });
     }
     return board;
   }
