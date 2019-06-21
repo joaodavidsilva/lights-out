@@ -71,9 +71,6 @@ class Board extends Component {
         flipCell(y - 1, x);
       }
       board[y] = row;
-      let aboard = this.state.allaboard;
-      aboard.push(board);
-      this.setState({ allaboard: aboard });
     }
     return board;
   }
